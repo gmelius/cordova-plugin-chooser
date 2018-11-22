@@ -96,8 +96,23 @@ public class Chooser extends CordovaPlugin{
 				// DownloadsProvider
 				else if (isDownloadsDocument(uri)) {
 					final String id = DocumentsContract.getDocumentId(uri);
-					final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-					return getDataColumn(context, contentUri, null, null);
+
+					// https://stackoverflow.com/a/53021624
+					String[] contentUriPrefixesToTry = new String[]{
+							"content://downloads/public_downloads",
+							"content://downloads/my_downloads",
+							"content://downloads/all_downloads"
+					};
+
+					for (String contentUriPrefix : contentUriPrefixesToTry) {
+						Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+						try {
+							String path = getDataColumn(context, contentUri, null, null);
+							if (path != null) {
+								return path;
+							}
+						} catch (Exception e) {}
+					}
 				}
 				// MediaProvider
 				else
