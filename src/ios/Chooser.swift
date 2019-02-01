@@ -50,7 +50,7 @@ class Chooser : CDVPlugin {
 					"data": data.base64EncodedString(),
 					"mediaType": self.detectMimeType(newURL),
 					"name": newURL.lastPathComponent,
-					"uri": newURL.absoluteString
+					"url": newURL.absoluteString
 				]
 
 				if let message = try String(
